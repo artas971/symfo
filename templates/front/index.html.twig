@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello FrontController!{% endblock %}
+
+{% block body %}
+
+<div class="container py-5">
+    <div class="row justify-content-around">
+        {% for book in books %}
+        <div class="col-3 mx-1">
+            <div class="card">
+                <img src="{{asset('images/books/' ~ book.imageName) | imagine_filter('second_thumb') }}" class="" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">{{book.title}}</h5>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

@@ -4,21 +4,53 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    app.encrypt_secret: "%env(ENCRYPT_SECRET)%"
+    app.maintenanceFilePath: "%kernel.project_dir%/public/.maintenance"
 
 services:
     # default configuration for services in *this* file
     _defaults:
-        autowire: true      # Automatically injects dependencies in your services.
+        autowire: true # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
 
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
     App\:
-        resource: '../src/'
+        resource: "../src/"
         exclude:
-            - '../src/DependencyInjection/'
-            - '../src/Entity/'
-            - '../src/Kernel.php'
+            - "../src/DependencyInjection/"
+            - "../src/Entity/"
+            - "../src/Kernel.php"
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+    App\EventListener\MaintenanceListener:
+        arguments:
+            - '%app.maintenanceFilePath%'
+            - '@twig'
+        tags:
+            - { name: kernel.event_listener, event: kernel.request }
+
+
+    App\EntityListener\UserPersistEventListener:
+        # On passe en argument le clé d'encryption qui est attendue par le constructeur de l'écouteur d'événement
+        arguments:
+            - "%env(ENCRYPT_SECRET)%"
+        # On ajoute un tag pour que l'écouteur d'événement soit appelé lors de l'événement prePersist de l'ORM Doctrine
+        tags:
+            - { name: doctrine.orm.entity_listener, event: prePersist, entity: 'App\Entity\User', lazy: true}
+
+    App\EntityListener\UserLoadEventListener:
+        # On passe en argument le clé d'encryption qui est attendue par le constructeur de l'écouteur d'événement
+        arguments:
+            - "%env(ENCRYPT_SECRET)%"
+        # On ajoute un tag pour que l'écouteur d'événement soit appelé lors de l'événement prePersist de l'ORM Doctrine
+        tags:
+            - {
+                  name: doctrine.orm.entity_listener,
+                  event: postLoad,
+                  entity: 'App\Entity\User',
+                  lazy: true,
+              }
+
+        

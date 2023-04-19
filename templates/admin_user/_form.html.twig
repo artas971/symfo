@@ -1,0 +1,21 @@
+{{ form_start(form) }}
+
+
+    {{form_row(form.nom)}}
+    {{form_row(form.prenom)}}
+    {{form_row(form.email)}}
+    {{form_row(form.password)}}
+    {{form_row(form.role) }}
+    <h3>Adresses</h3>
+
+    <ul class="adresses" data-index="{{ form.adresses|length > 0 ? form.adresses|last.vars.name + 1 : 0 }}"  data-prototype="{{ form_widget(form.adresses.vars.prototype)|e('html_attr') }}">
+        {% for adresse in form.adresses %}
+            <li>{{ form_row(adresse) }}</li>
+        {% endfor %}
+    </ul>
+
+    <button type="button" class="add_item_link btn btn-dark" data-collection-holder-class="adresses">Ajouter une adresse</button>
+    <div>
+    <button class="btn btn-success mt-4">Sauvegarder</button>
+    </div>
+{{ form_end(form) }}

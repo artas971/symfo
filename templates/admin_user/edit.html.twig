@@ -1,0 +1,68 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block title %}Edit User{% endblock %}
+
+{% block body %}
+    <h1>Edit User</h1>
+
+    {{ include('admin_user/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_admin_user_index') }}">back to list</a>
+
+    {{ include('admin_user/_delete_form.html.twig') }}
+{% endblock %}
+
+
+{% block javascripts %}
+
+<script>
+    const addAdresseFormDeleteLink = (item) => {
+            const removeFormButton = document.createElement('button');
+            removeFormButton.innerText = 'Supprimer l\'adresse';
+
+            item.append(removeFormButton);
+
+            removeFormButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                // remove the li for the tag form
+                item.remove();
+            });
+        }
+
+    const addFormToCollection = (e) => {
+            const collectionHolder = document.querySelector('.' + e.currentTarget.dataset.collectionHolderClass);
+
+            const item = document.createElement('li');
+
+            item.innerHTML = collectionHolder
+                .dataset
+                .prototype
+                .replace(
+                    /__name__/g,
+                    collectionHolder.dataset.index
+                );
+
+            collectionHolder.appendChild(item);
+
+            collectionHolder.dataset.index++;
+
+            addAdresseFormDeleteLink(item);
+        };
+
+    document.querySelectorAll('.add_item_link')
+            .forEach(btn => {
+                console.log('ok');
+                btn.addEventListener("click", addFormToCollection)
+            });
+
+            console.log(document.querySelectorAll('ul.adresses li'));
+    document
+            .querySelectorAll('ul.adresses li')
+            .forEach((adresse) => {
+                console.log('coucou');
+                addAdresseFormDeleteLink(adresse)
+            })
+
+</script>
+
+{% endblock %}

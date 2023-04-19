@@ -1,0 +1,8 @@
+fos_ck_editor:
+  configs:
+    full_config:
+      toolbar: full
+    standard:
+      toolbar: standard
+    basic:
+      toolbar: basic
